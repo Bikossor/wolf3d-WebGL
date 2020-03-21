@@ -1,0 +1,8 @@
+{
+  "name": "Wolf3D Browser",
+  "description": "Javascript version of Wolfenstein 3D",
+  "repository": "https://github.com/davesade/wolf3d-browser",
+  "logo": "http://node-js-sample.herokuapp.com/node.svg",
+  "keywords": ["node", "express", "static"],
+  "image": "heroku/nodejs"
+}
