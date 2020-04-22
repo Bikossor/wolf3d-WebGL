@@ -46,7 +46,9 @@ Wolf.Game = (function() {
         gd_baby         : 0,
         gd_easy         : 1,
         gd_medium       : 2,
-        gd_hard         : 3
+        gd_hard         : 3,
+
+        isDebug         : true,
     });
 
     var rendering = false,
