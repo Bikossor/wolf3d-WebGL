@@ -26,22 +26,16 @@
 
 Wolf.setConsts({
     FOV_RAD             : 75 * Math.PI / 180,
-    ISCHROME            : /chrome/.test(navigator.userAgent.toLowerCase()),
-    ISSAFARI            : /safari/.test(navigator.userAgent.toLowerCase()),
-    ISFIREFOX           : /firefox/.test(navigator.userAgent.toLowerCase()),
-    ISXP                : /windows nt 5\./.test(navigator.userAgent.toLowerCase()), //TODO (al) Could also match "Windows NT 5.0" which is Windows 2000
-    ISWEBKIT            : /webkit/.test(navigator.userAgent.toLowerCase())
 });
 Wolf.setConsts({ //TODO (al) Could be merged with the Wolf.setConsts() above
     VIEW_DIST           : (Wolf.XRES / 2) / Math.tan((Wolf.FOV_RAD / 2)),
-    TEXTURERESOLUTION   : Wolf.ISCHROME ? 128 : 64
+    TEXTURERESOLUTION   : 64
 });
 
 
 Wolf.Renderer = (function() {
     
     var slices = [],
-        useBackgroundImage = Wolf.ISWEBKIT,
         texturePath = "art/walls-shaded/" + Wolf.TEXTURERESOLUTION + "/",
         spritePath = "art/sprites/" + Wolf.TEXTURERESOLUTION + "/",
         sprites = [],
@@ -95,7 +89,7 @@ Wolf.Renderer = (function() {
             });
             slice.appendTo("#game .renderer");
 
-            image = useBackgroundImage ? $("<div>") : $("<img>");
+            image = $("<img>");
             
             image.css({
                 position : "absolute",
@@ -208,22 +202,13 @@ Wolf.Renderer = (function() {
             left = -(proc.offset) >> 0,
             height = proc.h,
             z = (maxDistZ - proc.dist) >> 0,
-            itop;
-            
-        if (Wolf.ISXP && Wolf.ISFIREFOX) { //TODO (al) Nowadays this would always be false
-            itop = (proc.texture % 2) ? 0 : -height;
-        } else {
             itop = -(proc.texture-1) * height;
-            textureSrc = "art/walls-shaded/64/walls.png";
-        }
+            
+        textureSrc = "art/walls-shaded/64/walls.png";
        
         if (image._src != textureSrc) {
             image._src = textureSrc;
-            if (useBackgroundImage) {
-                imgStyle.backgroundImage = "url(" + textureSrc + ")";
-            } else {
-                image.src = textureSrc;
-            }
+            image.src = textureSrc;
         }
         
         if (slice._zIndex != z) {
@@ -231,11 +216,7 @@ Wolf.Renderer = (function() {
         }
         if (image._height != height) {
             sliceStyle.height = (image._height = height) + "px";
-            if (Wolf.ISXP && Wolf.ISFIREFOX) { //TODO (al) Nowadays this would always be false
-                imgStyle.height = (height * 2) + "px";
-            } else {
-                imgStyle.height = (height * 120) + "px";
-            }
+            imgStyle.height = (height * 120) + "px";
         }
         
         if (image._itop != itop) {
@@ -359,11 +340,7 @@ Wolf.Renderer = (function() {
 
             if (image._src != textureSrc) {
                 image._src = textureSrc;
-                if (useBackgroundImage) {
-                    imgStyle.backgroundImage = "url(" + textureSrc + ")";
-                } else {
-                    image.src = textureSrc;
-                }
+                image.src = textureSrc;
             }
 
             z = (maxDistZ - dist) >> 0;
@@ -403,7 +380,7 @@ Wolf.Renderer = (function() {
         div.style.overflow = "hidden";
         div.className = "sprite";
 
-        image = useBackgroundImage ? $("<div>") : $("<img>");
+        image = $("<img>");
         
         image.css({
             position : "absolute",
