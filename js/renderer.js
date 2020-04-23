@@ -29,10 +29,10 @@ Wolf.setConsts({
     ISCHROME            : /chrome/.test(navigator.userAgent.toLowerCase()),
     ISSAFARI            : /safari/.test(navigator.userAgent.toLowerCase()),
     ISFIREFOX           : /firefox/.test(navigator.userAgent.toLowerCase()),
-    ISXP                : /windows nt 5\./.test(navigator.userAgent.toLowerCase()),
+    ISXP                : /windows nt 5\./.test(navigator.userAgent.toLowerCase()), //TODO (al) Could also match "Windows NT 5.0" which is Windows 2000
     ISWEBKIT            : /webkit/.test(navigator.userAgent.toLowerCase())
 });
-Wolf.setConsts({
+Wolf.setConsts({ //TODO (al) Could be merged with the Wolf.setConsts() above
     VIEW_DIST           : (Wolf.XRES / 2) / Math.tan((Wolf.FOV_RAD / 2)),
     TEXTURERESOLUTION   : Wolf.ISCHROME ? 128 : 64
 });
@@ -210,7 +210,7 @@ Wolf.Renderer = (function() {
             z = (maxDistZ - proc.dist) >> 0,
             itop;
             
-        if (Wolf.ISXP && Wolf.ISFIREFOX) {
+        if (Wolf.ISXP && Wolf.ISFIREFOX) { //TODO (al) Nowadays this would always be false
             itop = (proc.texture % 2) ? 0 : -height;
         } else {
             itop = -(proc.texture-1) * height;
@@ -231,7 +231,7 @@ Wolf.Renderer = (function() {
         }
         if (image._height != height) {
             sliceStyle.height = (image._height = height) + "px";
-            if (Wolf.ISXP && Wolf.ISFIREFOX) {
+            if (Wolf.ISXP && Wolf.ISFIREFOX) { //TODO (al) Nowadays this would always be false
                 imgStyle.height = (height * 2) + "px";
             } else {
                 imgStyle.height = (height * 120) + "px";
