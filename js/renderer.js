@@ -25,32 +25,29 @@
 */
 
 Wolf.setConsts({
-    FOV_RAD             : 75 * Math.PI / 180,
+    FOV_RAD: 75 * Math.PI / 180,
 });
 Wolf.setConsts({ //TODO (al) Could be merged with the Wolf.setConsts() above
-    VIEW_DIST           : (Wolf.XRES / 2) / Math.tan((Wolf.FOV_RAD / 2)),
-    TEXTURERESOLUTION   : 64
+    VIEW_DIST: (Wolf.XRES / 2) / Math.tan((Wolf.FOV_RAD / 2)),
+    TEXTURERESOLUTION: 64
 });
 
 
-Wolf.Renderer = (function() {
-    
+Wolf.Renderer = (function () {
+
     var slices = [],
         texturePath = "art/walls-shaded/" + Wolf.TEXTURERESOLUTION + "/",
         spritePath = "art/sprites/" + Wolf.TEXTURERESOLUTION + "/",
         sprites = [],
         maxDistZ = 64 * 0x10000,
         hasInit = false;
-        visibleSprites = [];
-        
-    var TILESHIFT = Wolf.TILESHIFT,
-        TILEGLOBAL = Wolf.TILEGLOBAL,
+    visibleSprites = [];
+
+    var TILEGLOBAL = Wolf.TILEGLOBAL,
         TRACE_HIT_VERT = Wolf.TRACE_HIT_VERT,
         TRACE_HIT_DOOR = Wolf.TRACE_HIT_DOOR,
-        WALL_TILE = Wolf.WALL_TILE,
         DOOR_TILE = Wolf.DOOR_TILE,
         TEX_PLATE = Wolf.TEX_PLATE,
-        TILE2POS = Wolf.TILE2POS,
         POS2TILE = Wolf.POS2TILE,
         VIEW_DIST = Wolf.VIEW_DIST,
         SLICE_WIDTH = Wolf.SLICE_WIDTH,
@@ -60,11 +57,9 @@ Wolf.Renderer = (function() {
         YRES = Wolf.YRES,
         MINDIST = Wolf.MINDIST,
         cos = Math.cos,
-        sin = Math.sin,
         tan = Math.tan,
         atan2 = Math.atan2,
-        round = Math.round,
-        sqrt = Math.sqrt;
+        round = Math.round;
 
     function init() {
         var image, slice, x;
@@ -72,65 +67,65 @@ Wolf.Renderer = (function() {
             return;
         }
         hasInit = true;
-    
+
         $("#game .renderer")
             .width(Wolf.XRES + "px")
             .height(Wolf.YRES + "px");
-            
-        for (x=0; x<Wolf.XRES; x += Wolf.SLICE_WIDTH) {
+
+        for (x = 0; x < Wolf.XRES; x += Wolf.SLICE_WIDTH) {
             slice = $("<div>");
             slice.css({
-                position : "absolute",
-                width : Wolf.SLICE_WIDTH + "px",
-                height : Wolf.YRES + "px",
-                left : x + "px",
-                top : 0,
-                overflow : "hidden"
+                position: "absolute",
+                width: Wolf.SLICE_WIDTH + "px",
+                height: Wolf.YRES + "px",
+                left: x + "px",
+                top: 0,
+                overflow: "hidden"
             });
             slice.appendTo("#game .renderer");
 
             image = $("<img>");
-            
+
             image.css({
-                position : "absolute",
-                display : "block",
-                top : 0,
-                height : 0,
-                width : Wolf.SLICE_WIDTH * Wolf.WALL_TEXTURE_WIDTH + "px",
-                backgroundSize : "100% 100%"
+                position: "absolute",
+                display: "block",
+                top: 0,
+                height: 0,
+                width: Wolf.SLICE_WIDTH * Wolf.WALL_TEXTURE_WIDTH + "px",
+                backgroundSize: "100% 100%"
             });
-            
+
             var sliceElement = slice[0];
             sliceElement.texture = image[0];
             sliceElement.appendChild(sliceElement.texture);
             slices.push(sliceElement);
         }
     }
-    
+
     function reset() {
         $("#game .renderer .sprite").remove();
         sprites = [];
         visibleSprites = [];
     }
-    
+
     function processTrace(viewport, tracePoint) {
         var x = tracePoint.x,
             y = tracePoint.y,
             vx = viewport.x,
             vy = viewport.y,
-            
+
             dx = viewport.x - tracePoint.x,
             dy = viewport.y - tracePoint.y,
-            dist = Math.sqrt(dx*dx + dy*dy),
+            dist = Math.sqrt(dx * dx + dy * dy),
             frac,
             h, w, offset;
 
         // correct for fisheye
         dist = dist * cos(FINE2RAD(tracePoint.angle - viewport.angle));
-        
+
         w = WALL_TEXTURE_WIDTH * SLICE_WIDTH;
         h = (VIEW_DIST / dist * TILEGLOBAL) >> 0;
-        
+
         if (tracePoint.flags & TRACE_HIT_DOOR) {
             if (tracePoint.flags & TRACE_HIT_VERT) {
                 if (x < vx) {
@@ -148,7 +143,7 @@ Wolf.Renderer = (function() {
         } else {
             frac = 1 - tracePoint.frac;
         }
-       
+
         offset = frac * w;
         if (offset > w - SLICE_WIDTH) {
             offset = w - SLICE_WIDTH;
@@ -157,30 +152,30 @@ Wolf.Renderer = (function() {
         if (offset < 0) {
             offset = 0;
         }
-        
+
         return {
-            w : w,
-            h : h,
-            dist : dist,
-            vert : tracePoint.flags & TRACE_HIT_VERT,
-            offset : offset
+            w: w,
+            h: h,
+            dist: dist,
+            vert: tracePoint.flags & TRACE_HIT_VERT,
+            offset: offset
         };
     }
-    
+
     function clear() {
         var n, sprite;
-        for (n=0;n<visibleSprites.length;n++) {
+        for (n = 0; n < visibleSprites.length; n++) {
             sprite = visibleSprites[n].sprite;
             if (sprite && sprite.div) {
                 sprite.div.style.display = "none";
             }
         }
     }
-    
+
     function draw(viewport, level, tracers, visibleTiles) {
         var n, tracePoint;
-        
-        for (var n=0,len=tracers.length;n<len;++n) {
+
+        for (var n = 0, len = tracers.length; n < len; ++n) {
             tracePoint = tracers[n];
             if (!tracePoint.oob) {
                 if (tracePoint.flags & Wolf.TRACE_HIT_DOOR) {
@@ -192,7 +187,7 @@ Wolf.Renderer = (function() {
         }
         drawSprites(viewport, level, visibleTiles);
     }
-    
+
     function updateSlice(n, textureSrc, proc) {
         var slice = slices[n],
             image = slice.texture,
@@ -202,15 +197,15 @@ Wolf.Renderer = (function() {
             left = -(proc.offset) >> 0,
             height = proc.h,
             z = (maxDistZ - proc.dist) >> 0,
-            itop = -(proc.texture-1) * height;
-            
+            itop = -(proc.texture - 1) * height;
+
         textureSrc = "art/walls-shaded/64/walls.png";
-       
+
         if (image._src != textureSrc) {
             image._src = textureSrc;
             image.src = textureSrc;
         }
-        
+
         if (slice._zIndex != z) {
             sliceStyle.zIndex = slice._zIndex = z;
         }
@@ -218,11 +213,11 @@ Wolf.Renderer = (function() {
             sliceStyle.height = (image._height = height) + "px";
             imgStyle.height = (height * 120) + "px";
         }
-        
+
         if (image._itop != itop) {
             imgStyle.top = (image._itop = itop) + "px";
         }
-        
+
         if (image._top != top) {
             sliceStyle.top = (image._top = top) + "px";
         }
@@ -240,55 +235,55 @@ Wolf.Renderer = (function() {
             proc = processTrace(viewport, tracePoint),
             texture = proc.vert ? level.wallTexX[x][y] : level.wallTexY[x][y],
             textureSrc;
-        
-        
+
+
         // door sides
         if (tracePoint.flags & TRACE_HIT_VERT) {
-            if (x >= vx && tileMap[x-1][y] & DOOR_TILE) {
+            if (x >= vx && tileMap[x - 1][y] & DOOR_TILE) {
                 texture = TEX_PLATE;
             }
-            if (x < vx && tileMap[x+1][y] & DOOR_TILE) {
+            if (x < vx && tileMap[x + 1][y] & DOOR_TILE) {
                 texture = TEX_PLATE;
             }
         } else {
-            if (y >= vy && tileMap[x][y-1] & DOOR_TILE) {
+            if (y >= vy && tileMap[x][y - 1] & DOOR_TILE) {
                 texture = TEX_PLATE;
             }
-            if (y < vy && tileMap[x][y+1] & DOOR_TILE) {
+            if (y < vy && tileMap[x][y + 1] & DOOR_TILE) {
                 texture = TEX_PLATE;
             }
         }
-        
+
         texture++;
-        
+
         proc.texture = texture;
-        
+
         if (texture % 2 == 0) {
             texture--;
         }
         textureSrc = texturePath + "w_" + texture + ".png";
-        
+
         updateSlice(n, textureSrc, proc);
     }
-    
+
     function drawDoor(n, viewport, tracePoint, level) {
         var proc = processTrace(viewport, tracePoint),
             texture, textureSrc;
-            
+
         //texture = Wolf.TEX_DDOOR + 1;
         texture = level.state.doorMap[tracePoint.tileX][tracePoint.tileY].texture + 1;
-        
+
         proc.texture = texture;
-        
+
         if (texture % 2 == 0) {
             texture -= 1;
         }
-        
+
         textureSrc = texturePath + "w_" + texture + ".png";
-        
+
         updateSlice(n, textureSrc, proc);
     }
-        
+
     function drawSprites(viewport, level, visibleTiles) {
         var vis, n,
             dist, dx, dy, angle,
@@ -296,15 +291,15 @@ Wolf.Renderer = (function() {
             div, image,
             divStyle, imgStyle;
 
-      
+
         // build visible sprites list
         visibleSprites = Wolf.Sprites.createVisList(viewport, level, visibleTiles);
-        
-        for (n = 0; n < visibleSprites.length; ++n ){
+
+        for (n = 0; n < visibleSprites.length; ++n) {
             vis = visibleSprites[n];
             dist = vis.dist;
-            
-            if (dist < MINDIST / 2 ) {
+
+            if (dist < MINDIST / 2) {
                 //continue; // little hack to save speed & z-buffer
             }
 
@@ -312,27 +307,27 @@ Wolf.Renderer = (function() {
             if (!vis.sprite.div) {
                 loadSprite(vis.sprite)
             }
-            
+
             div = vis.sprite.div;
             divStyle = div.style;
-            
+
             image = div.image;
             imgStyle = image.style;
-            
-            dx = vis.sprite.x  - viewport.x;
-            dy = vis.sprite.y  - viewport.y;
+
+            dx = vis.sprite.x - viewport.x;
+            dy = vis.sprite.y - viewport.y;
             angle = atan2(dy, dx) - FINE2RAD(viewport.angle);
-            
+
             //dist = dist * Math.cos(angle);
-           
+
             size = (VIEW_DIST / dist * TILEGLOBAL) >> 0;
 
             divStyle.display = "block";
             divStyle.width = size + "px";
             divStyle.height = size + "px";
-            
+
             divStyle.left = (XRES / 2 - size / 2 - tan(angle) * VIEW_DIST) + "px";
-            
+
             divStyle.top = (YRES / 2 - size / 2) + "px";
 
             texture = Wolf.Sprites.getTexture(vis.sprite.tex[0]);
@@ -346,7 +341,7 @@ Wolf.Renderer = (function() {
             z = (maxDistZ - dist) >> 0;
             width = texture.num * size;
             left = -texture.idx * size;
-                
+
             if (div._zIndex != z) {
                 divStyle.zIndex = div._zIndex = z;
             }
@@ -361,14 +356,14 @@ Wolf.Renderer = (function() {
             }
         }
     }
-    
+
     function unloadSprite(sprite) {
         if (sprite.div) {
             $(sprite.div).remove();
             sprite.div = null;
         }
     }
-    
+
     function loadSprite(sprite) {
         var div = document.createElement("div"),
             image;
@@ -381,31 +376,31 @@ Wolf.Renderer = (function() {
         div.className = "sprite";
 
         image = $("<img>");
-        
+
         image.css({
-            position : "absolute",
-            display : "block",
-            top : 0,
-            height : "100%",
-            width : "100%",
-            backgroundSize : "100%",
-            backgroundRepeat : "no-repeat"
+            position: "absolute",
+            display: "block",
+            top: 0,
+            height: "100%",
+            width: "100%",
+            backgroundSize: "100%",
+            backgroundRepeat: "no-repeat"
         });
-        
+
         div.image = image[0];
         div.appendChild(div.image);
-        
+
         sprite.div = div;
         $("#game .renderer").append(div);
     }
-    
+
     return {
-        init : init,
-        draw : draw,
-        clear : clear,
-        loadSprite : loadSprite,
-        unloadSprite : unloadSprite,
-        reset : reset
+        init: init,
+        draw: draw,
+        clear: clear,
+        loadSprite: loadSprite,
+        unloadSprite: unloadSprite,
+        reset: reset
     };
 
 })();
