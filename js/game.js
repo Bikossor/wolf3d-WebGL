@@ -88,6 +88,11 @@ Wolf.Game = (function() {
         ticsPerSecond = 70,
         lastTimeCount = 0;
         
+    var faceSpriteSheet = new Image(),
+        faceSprites = [],
+        faceCanvas,
+        faceCanvasContext;
+
     /**
      * @description Build the movement, angles, and buttons for a frame of action:
      *   Player.angle
@@ -537,9 +542,8 @@ Wolf.Game = (function() {
             pic = 21;
         }
 
-        $("#game .hud .bj").css({
-            backgroundPosition : - (pic * Wolf.HUD_FACE_WIDTH) + "px 0"
-        });
+        faceCanvasContext.clearRect(0, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT);
+        faceCanvasContext.drawImage(faceSprites[pic], 0, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT);
     }
 
     
@@ -1184,6 +1188,44 @@ Wolf.Game = (function() {
         if (!isFullscreen() && (window.fullScreen || (window.innerWidth == screen.width && window.innerHeight == screen.height))) {
             toggleFullscreen();
         }
+        
+        // Wait for the sprite sheet to load
+        faceSpriteSheet.onload = function () {
+            Promise.all([
+                createImageBitmap(faceSpriteSheet,    0, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,   48, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,   96, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  144, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  192, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  240, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  288, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  336, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  384, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  432, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  480, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  528, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  576, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  624, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  672, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  720, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  768, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  816, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  864, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  912, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet,  960, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet, 1008, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet, 1056, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet, 1104, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet, 1152, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+                createImageBitmap(faceSpriteSheet, 1200, 0, Wolf.HUD_FACE_WIDTH, Wolf.HUD_FACE_HEIGHT),
+            ]).then(function (sprites) {
+                faceSprites = sprites;
+            });
+        };
+
+        faceSpriteSheet.src = "./art/bj.png";
+        faceCanvas = document.getElementById("bj-face");
+        faceCanvasContext = faceCanvas.getContext("2d");
     }
     
     /**
