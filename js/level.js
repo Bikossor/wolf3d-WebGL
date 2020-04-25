@@ -626,16 +626,6 @@ Wolf.Level = (function() {
         }
     }
 
-
-
-    var cachedGuard = 0,
-        cachedOfficer = 0,
-        cachedSS = 0,
-        cachedDog = 0,
-        cachedMutant = 0,
-        progress_bar = 0;
-
-
     /**
      * @description Spawn all actors and mark down special places.
      * @memberOf Wolf.Level
@@ -645,13 +635,6 @@ Wolf.Level = (function() {
     function scanInfoPlane(level, skill) {
         var x, y, tile;
         
-        cachedGuard = 0;
-        cachedOfficer = 0;
-        cachedSS = 0;
-        cachedDog = 0;
-        cachedMutant = 0;
-        progress_bar = 0;
-
         for (y = 0;y < 64;++y) {
             for (x = 0;x < 64;++x) {
                 tile = level.plane2[(63 - y) * 64 + x];
@@ -681,10 +664,6 @@ Wolf.Level = (function() {
                     case 109:
                     case 110:
                     case 111:
-                        if (!cachedGuard) {
-                            Wolf.Sprites.cacheTextures(Wolf.SPR_GRD_S_1, Wolf.SPR_GRD_SHOOT3);
-                            cachedGuard = 1;
-                        }
                         Wolf.Actors.spawnStand(level, skill, Wolf.en_guard, x, y, tile - 108);
                         break;
                     case 184:
@@ -707,10 +686,6 @@ Wolf.Level = (function() {
                     case 113:
                     case 114:
                     case 115:
-                        if (!cachedGuard) {
-                            Wolf.Sprites.cacheTextures(Wolf.SPR_GRD_S_1, Wolf.SPR_GRD_SHOOT3);
-                            cachedGuard = 1;
-                        }
                         Wolf.Actors.spawnPatrol(level, skill, Wolf.en_guard, x, y, tile - 112);
                         break;
                     case 124:
@@ -737,10 +712,6 @@ Wolf.Level = (function() {
                     case 117:
                     case 118:
                     case 119:
-                        if (!cachedOfficer) {
-                            Wolf.Sprites.cacheTextures(Wolf.SPR_OFC_S_1,Wolf.SPR_OFC_SHOOT3);
-                            cachedOfficer = 1;
-                        }
                         Wolf.Actors.spawnStand(level, skill, Wolf.en_officer, x, y, tile - 116);
                         break;
                     case 192:
@@ -763,10 +734,6 @@ Wolf.Level = (function() {
                     case 121:
                     case 122:
                     case 123:
-                        if (!cachedOfficer) {
-                            Wolf.Sprites.cacheTextures(Wolf.SPR_OFC_S_1, Wolf.SPR_OFC_SHOOT3);
-                            cachedOfficer = 1;
-                        }
                         Wolf.Actors.spawnPatrol(level, skill, Wolf.en_officer, x, y, tile - 120);
                         break;
                     // SS
@@ -790,10 +757,6 @@ Wolf.Level = (function() {
                     case 127:
                     case 128:
                     case 129:
-                        if (!cachedSS) {
-                            Wolf.Sprites.cacheTextures(Wolf.SPR_SS_S_1, Wolf.SPR_SS_SHOOT3);
-                            cachedSS = 1;
-                        }
                         Wolf.Actors.spawnStand(level, skill, Wolf.en_ss, x, y, tile - 126);
                         break;
                     case 202:
@@ -816,10 +779,6 @@ Wolf.Level = (function() {
                     case 131:
                     case 132:
                     case 133:
-                        if (!cachedSS) {
-                            Wolf.Sprites.cacheTextures(Wolf.SPR_SS_S_1, Wolf.SPR_SS_SHOOT3);
-                            cachedSS = 1;
-                        }
                         Wolf.Actors.spawnPatrol(level, skill, Wolf.en_ss, x, y, tile - 130);
                         break;
                     // dogs
@@ -843,10 +802,6 @@ Wolf.Level = (function() {
                     case 135:
                     case 136:
                     case 137:
-                        if (!cachedDog) {
-                            Wolf.Sprites.cacheTextures(Wolf.SPR_DOG_W1_1, Wolf.SPR_DOG_JUMP3);
-                            cachedDog = 1;
-                        }
                         Wolf.Actors.spawnStand(level, skill, Wolf.en_dog, x, y, tile - 134);
                         break;
                     case 210:
@@ -869,64 +824,47 @@ Wolf.Level = (function() {
                     case 139:
                     case 140:
                     case 141:
-                        if (!cachedDog) {
-                            Wolf.Sprites.cacheTextures(Wolf.SPR_DOG_W1_1, Wolf.SPR_DOG_JUMP3);
-                            cachedDog = 1;
-                        }
                         Wolf.Actors.spawnPatrol(level, skill, Wolf.en_dog, x, y, tile - 138);
                         break;
                     // bosses
                     case 214:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_BOSS_W1, Wolf.SPR_BOSS_DIE3);
                         Wolf.Actors.spawnBoss(level, skill, Wolf.en_boss, x, y);
                         break;
                     case 197:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_GRETEL_W1, Wolf.SPR_GRETEL_DIE3);
                         Wolf.Actors.spawnBoss(level, skill, Wolf.en_gretel, x, y);
                         break;
                     case 215:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_GIFT_W1, Wolf.SPR_GIFT_DEAD);
                         Wolf.Actors.spawnBoss(level, skill, Wolf.en_gift, x, y);
                         break;
                     case 179:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_FAT_W1, Wolf.SPR_FAT_DEAD);
                         Wolf.Actors.spawnBoss(level, skill, Wolf.en_fat, x, y);
                         break;
                     case 196:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_SCHABB_W1, Wolf.SPR_HYPO4);
                         Wolf.Actors.spawnBoss(level, skill, Wolf.en_schabbs, x, y);
                         break;
                     case 160:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_FAKE_W1, Wolf.SPR_FAKE_DEAD);
                         Wolf.Actors.spawnBoss(level, skill, Wolf.en_fake, x, y);
                         break;
                     case 178:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_MECHA_W1, Wolf.SPR_HITLER_DIE7);
                         Wolf.Actors.spawnBoss(level, skill, Wolf.en_mecha, x, y);
                         break;
                     // Spear
                     case 106:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_SPECTRE_W1, Wolf.SPR_SPECTRE_F4);
                         Wolf.Actors.spawnBoss(level, skill, Wolf.en_spectre, x, y);
                         break;
                     case 107:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_ANGEL_W1, Wolf.SPR_ANGEL_DEAD);
                         Wolf.Actors.spawnBoss(level, skill, Wolf.en_angel, x, y);
                         break;
                     case 125:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_TRANS_W1, Wolf.SPR_TRANS_DIE3);
                         Wolf.Actors.spawnBoss(level, skill, Wolf.en_trans, x, y);
                         break;
                     case 142:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_UBER_W1, Wolf.SPR_UBER_DEAD);
                         Wolf.Actors.spawnBoss(level, skill, olf.en_uber, x, y);
                         break;
                     case 143:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_WILL_W1, Wolf.SPR_WILL_DEAD);
                         Wolf.Actors.spawnBoss(level, skill, Wolf.en_will, x, y);
                         break;
                     case 161:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_DEATH_W1, Wolf.SPR_DEATH_DEAD);
                         Wolf.Actors.spawnBoss(level, skill, Wolf.en_death, x, y);
                         break;
                     // mutants
@@ -948,10 +886,6 @@ Wolf.Level = (function() {
                     case 217:
                     case 218:
                     case 219:
-                        if (!cachedMutant) {
-                            Wolf.Sprites.cacheTextures(Wolf.SPR_MUT_S_1, Wolf.SPR_MUT_SHOOT4);
-                            cachedMutant = 1;
-                        }
                         Wolf.Actors.spawnStand(level, skill, Wolf.en_mutant, x, y, tile - 216);
                         break;
                     case 256:
@@ -972,27 +906,19 @@ Wolf.Level = (function() {
                     case 221:
                     case 222:
                     case 223:
-                        if (!cachedMutant) {
-                            Wolf.Sprites.cacheTextures(Wolf.SPR_MUT_S_1, Wolf.SPR_MUT_SHOOT4);
-                            cachedMutant = 1;
-                        }
                         Wolf.Actors.spawnPatrol(level, skill, Wolf.en_mutant, x, y, tile - 220 );
                         break;
                     // ghosts
                     case 224:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_BLINKY_W1, Wolf.SPR_BLINKY_W2);
                         Wolf.Actors.spawnGhosts(level, skill, Wolf.en_blinky, x, y);
                         break;
                     case 225:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_PINKY_W1, Wolf.SPR_PINKY_W2);
                         Wolf.Actors.spawnGhosts(level, skill, Wolf.en_clyde, x, y);
                         break;
                     case 226:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_CLYDE_W1, Wolf.SPR_CLYDE_W2);
                         Wolf.Actors.spawnGhosts(level, skill, Wolf.en_pinky, x, y);
                         break;
                     case 227:
-                        Wolf.Sprites.cacheTextures(Wolf.SPR_INKY_W1, Wolf.SPR_INKY_W2);
                         Wolf.Actors.spawnGhosts(level, skill, Wolf.en_inky, x, y);
                         break;
                 }

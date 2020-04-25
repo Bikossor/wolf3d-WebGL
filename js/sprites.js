@@ -969,8 +969,6 @@ Wolf.Sprites = (function() {
         }
         */
 
-        //cacheTextures(tex, tex);
-
         if (index == -1) {    // one texture for each phase
             sprite.tex[0] = tex;
             sprite.flags |= Wolf.SPRT_ONE_TEX;
@@ -980,17 +978,6 @@ Wolf.Sprites = (function() {
         sprite.flags |= Wolf.SPRT_CHG_TEX;
     }
 
-    function cacheTextures(start, end) {
-        var i, texname;
-
-        for( i = start ; i <= end ; ++i ) {
-            if (!spriteTextures[i]) {
-                //texname = "sprites/" + () + ".png";
-                //spriteTextures[i] = TM_FindTexture( texname, TT_Sprite );
-            }
-        }
-    }
-    
     function getTexture(id) {
         return sheets[id];
     }
@@ -1075,7 +1062,6 @@ Wolf.Sprites = (function() {
         getNewSprite : getNewSprite,
         setPos : setPos,
         setTex : setTex,
-        cacheTextures : cacheTextures,
         getTexture : getTexture,
         createVisList : createVisList,
         remove : remove,
