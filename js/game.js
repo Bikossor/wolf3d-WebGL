@@ -1117,7 +1117,7 @@ Wolf.Game = (function() {
      * @private
      */
     function enterFullscreen() {
-        var ratio = window.innerWidth / 640,
+        var ratio = window.innerHeight / 400, // Calculate with the height to maintain the aspect ratio
             sliceZoom = Math.floor(Wolf.SLICE_WIDTH * ratio),
             zoom = sliceZoom / Wolf.SLICE_WIDTH,
             transform = "scale(" + zoom + ")";
