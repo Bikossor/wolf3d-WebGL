@@ -1098,7 +1098,7 @@ Wolf.Game = (function() {
                 main.requestFullScreen(true);
                 return true;
             } else if (main.webkitRequestFullScreen) {
-                main.webkitRequestFullScreen(true);
+                main.webkitRequestFullScreen();
                 return true;
             } else if (document.body.mozRequestFullScreenWithKeys) {
                 document.body.mozRequestFullScreenWithKeys();
